@@ -1,0 +1,1174 @@
+.centerStage,
+.login {
+  min-height: 100vh;
+  display: grid;
+  place-content: center;
+  gap: 24px;
+  padding: 32px 20px;
+}
+
+.login {
+  align-content: center;
+}
+
+.loginHero {
+  position: relative;
+  display: grid;
+  gap: 16px;
+  padding: 30px 24px;
+  overflow: hidden;
+  border: 1px solid var(--border-strong);
+  border-radius: 28px;
+  background:
+    radial-gradient(circle at 76% 0%, rgba(77, 212, 255, 0.23), transparent 12rem),
+    radial-gradient(circle at 10% 98%, rgba(253, 94, 243, 0.18), transparent 11rem),
+    rgba(255, 255, 255, 0.07);
+  box-shadow: var(--shadow-strong), var(--glow-purple);
+  backdrop-filter: blur(24px);
+}
+
+.loginHero::before {
+  content: "";
+  position: absolute;
+  inset: -72px -36px auto auto;
+  width: 210px;
+  height: 150px;
+  border: 1px solid rgba(77, 212, 255, 0.42);
+  border-radius: 50%;
+  transform: rotate(-18deg);
+  box-shadow:
+    0 0 0 12px rgba(140, 91, 255, 0.08),
+    0 0 0 24px rgba(253, 94, 243, 0.06);
+}
+
+.loginHero > *,
+.createCard > *,
+.tournamentSection > *,
+.section > *,
+.confirmDialog > * {
+  position: relative;
+}
+
+.brandMark {
+  width: 68px;
+  height: 68px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 22px;
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0.05)),
+    var(--accent-gradient);
+  color: #ffffff;
+  box-shadow: var(--glow-pink), 0 16px 38px rgba(0, 0, 0, 0.34);
+}
+
+.eyebrow {
+  position: relative;
+  margin: 0 0 8px;
+  color: var(--accent-blue);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.sectionHeader .eyebrow {
+  padding-left: 56px;
+}
+
+.sectionHeader .eyebrow::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 42px;
+  height: 2px;
+  border-radius: 999px;
+  background: var(--accent-gradient);
+  box-shadow: var(--glow-pink);
+  transform: translateY(-50%);
+}
+
+.login h1,
+.header h1,
+.sectionHeader h2 {
+  margin: 0;
+  letter-spacing: 0;
+}
+
+.login h1 {
+  max-width: 11ch;
+  color: #ffffff;
+  font-size: clamp(2.9rem, 17vw, 5.25rem);
+  line-height: 0.9;
+}
+
+.login h1::first-line {
+  color: #ffffff;
+}
+
+.loginCopy {
+  max-width: 30rem;
+  margin: 2px 0 0;
+  color: var(--muted);
+  font-size: 1rem;
+  line-height: 1.62;
+}
+
+.loginActions {
+  display: grid;
+  gap: 12px;
+  width: 100%;
+}
+
+.primaryButton,
+.secondaryButton,
+.textButton,
+.dangerButton,
+.iconButton,
+.tournamentCard,
+.primaryActionButton,
+.dangerActionButton {
+  min-height: 46px;
+  border: 0;
+  border-radius: 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-weight: 600;
+  transition:
+    transform 180ms ease,
+    border-color 180ms ease,
+    background 180ms ease,
+    box-shadow 180ms ease,
+    color 180ms ease;
+}
+
+.primaryButton,
+.textButton,
+.primaryActionButton {
+  background: var(--accent-gradient);
+  color: #ffffff;
+  box-shadow: 0 14px 34px rgba(140, 91, 255, 0.3), var(--glow-blue);
+}
+
+.primaryButton:hover,
+.textButton:hover,
+.primaryActionButton:hover,
+.tournamentCard:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 20px 44px rgba(140, 91, 255, 0.38), var(--glow-pink);
+}
+
+.secondaryButton,
+.iconButton {
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.075);
+  color: var(--text);
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.18);
+  backdrop-filter: blur(18px);
+}
+
+.secondaryButton:hover,
+.iconButton:hover {
+  border-color: rgba(77, 212, 255, 0.34);
+  background: rgba(77, 212, 255, 0.11);
+  box-shadow: var(--glow-blue), 0 10px 26px rgba(0, 0, 0, 0.2);
+}
+
+.primaryButton:active,
+.secondaryButton:active,
+.textButton:active,
+.iconButton:active,
+.dangerButton:active,
+.teamCard:active,
+.tournamentCard:active,
+.primaryActionButton:active,
+.dangerActionButton:active {
+  transform: scale(0.98);
+}
+
+.primaryButton:disabled,
+.textButton:disabled,
+.iconButton:disabled {
+  opacity: 0.54;
+  transform: none;
+}
+
+.dangerButton {
+  width: 100%;
+  margin-top: 20px;
+  border: 1px solid var(--danger-border);
+  background:
+    linear-gradient(135deg, rgba(255, 93, 122, 0.16), rgba(253, 94, 243, 0.08));
+  color: #ffb7c4;
+}
+
+.dangerButton:hover,
+.dangerActionButton:hover {
+  box-shadow: 0 0 30px rgba(255, 93, 122, 0.22);
+}
+
+.iconButton {
+  width: 46px;
+  flex: 0 0 46px;
+}
+
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 24px 18px 26px;
+  border-bottom: 1px solid var(--border);
+  border-radius: 0 0 28px 28px;
+  background:
+    radial-gradient(circle at 88% 10%, rgba(77, 212, 255, 0.22), transparent 10rem),
+    linear-gradient(135deg, rgba(253, 94, 243, 0.16), rgba(140, 91, 255, 0.12) 42%, rgba(255, 255, 255, 0.055)),
+    rgba(20, 21, 37, 0.86);
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.32);
+  backdrop-filter: blur(22px);
+}
+
+.detailHeader {
+  display: grid;
+  grid-template-columns: 46px minmax(0, 1fr) 46px;
+}
+
+.headerCopy {
+  min-width: 0;
+}
+
+.detailHeader .headerCopy {
+  text-align: center;
+}
+
+.header h1 {
+  color: #ffffff;
+  font-size: clamp(1.65rem, 7vw, 2.45rem);
+  font-weight: 700;
+  line-height: 1;
+  overflow-wrap: anywhere;
+  text-shadow: 0 0 28px rgba(77, 212, 255, 0.22);
+}
+
+.headerCopy span {
+  display: block;
+  margin-top: 10px;
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.dashboard {
+  display: grid;
+  gap: 24px;
+  padding: 20px 16px 34px;
+}
+
+.createCard,
+.tournamentSection,
+.section {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.105), rgba(255, 255, 255, 0.052)),
+    rgba(255, 255, 255, 0.055);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(24px);
+}
+
+.createCard::before,
+.tournamentSection::before,
+.section::before,
+.confirmDialog::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 100% 0%, rgba(77, 212, 255, 0.11), transparent 11rem),
+    radial-gradient(circle at 0% 100%, rgba(253, 94, 243, 0.09), transparent 12rem);
+}
+
+.createCard,
+.tournamentSection {
+  padding: 20px;
+}
+
+.createForm,
+.formRow {
+  display: flex;
+  gap: 10px;
+}
+
+.createForm {
+  margin-top: 16px;
+}
+
+.createForm .primaryButton {
+  min-width: 96px;
+  padding: 0 18px;
+}
+
+.feedbackBar {
+  display: grid;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.errorMessage,
+.successMessage {
+  margin: 0;
+  padding: 12px 13px;
+  border-radius: 16px;
+  font-size: 0.84rem;
+  font-weight: 800;
+  line-height: 1.35;
+}
+
+.errorMessage {
+  border: 1px solid var(--danger-border);
+  background: var(--danger-soft);
+  color: #ffbac6;
+}
+
+.successMessage {
+  border: 1px solid rgba(67, 240, 138, 0.28);
+  background: rgba(67, 240, 138, 0.11);
+  color: #b8ffd3;
+}
+
+.createForm input,
+.formRow input,
+.scorerForm input,
+.scorerForm select,
+.fixtureLine input {
+  width: 100%;
+  min-height: 46px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--input-bg);
+  color: var(--text);
+  outline: 0;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.045);
+  transition:
+    border-color 180ms ease,
+    box-shadow 180ms ease,
+    background 180ms ease;
+}
+
+.createForm input,
+.formRow input,
+.scorerForm input,
+.scorerForm select {
+  padding: 0 14px;
+}
+
+.scorerForm select {
+  color: var(--text);
+}
+
+.scorerForm select option {
+  background: #181929;
+  color: #ffffff;
+}
+
+.createForm input::placeholder,
+.formRow input::placeholder,
+.scorerForm input::placeholder {
+  color: var(--muted-2);
+}
+
+.createForm input:focus,
+.formRow input:focus,
+.scorerForm input:focus,
+.scorerForm select:focus,
+.fixtureLine input:focus {
+  border-color: rgba(77, 212, 255, 0.62);
+  background: rgba(12, 15, 33, 0.82);
+  box-shadow:
+    0 0 0 3px rgba(77, 212, 255, 0.12),
+    var(--glow-blue);
+}
+
+.formRow .iconButton,
+.scorerForm .iconButton {
+  border-color: transparent;
+  background: var(--accent-gradient);
+  color: #ffffff;
+  box-shadow: 0 14px 32px rgba(140, 91, 255, 0.28), var(--glow-pink);
+}
+
+.tournamentList {
+  display: grid;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.tournamentCard {
+  width: 100%;
+  min-height: 62px;
+  justify-content: space-between;
+  padding: 0 18px 0 20px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background:
+    linear-gradient(90deg, rgba(253, 94, 243, 0.2), rgba(140, 91, 255, 0.18), rgba(77, 212, 255, 0.14)),
+    rgba(255, 255, 255, 0.06);
+  color: #ffffff;
+  box-shadow: var(--shadow);
+}
+
+.tournamentCard span {
+  min-width: 0;
+  overflow: hidden;
+  text-align: left;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.heroPanel {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  padding: 20px 16px 12px;
+}
+
+.statTile {
+  min-height: 106px;
+  padding: 14px;
+  display: grid;
+  align-content: space-between;
+  gap: 8px;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  background:
+    radial-gradient(circle at 85% 10%, rgba(77, 212, 255, 0.13), transparent 5.4rem),
+    linear-gradient(145deg, rgba(255, 255, 255, 0.105), rgba(255, 255, 255, 0.05));
+  color: var(--muted);
+  font-size: 0.76rem;
+  font-weight: 600;
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(20px);
+}
+
+.statTile svg {
+  color: var(--accent-blue);
+  filter: drop-shadow(0 0 12px rgba(77, 212, 255, 0.38));
+}
+
+.statTile span {
+  color: var(--text);
+  font-size: clamp(1.95rem, 9vw, 2.6rem);
+  font-weight: 950;
+  line-height: 0.9;
+}
+
+.tabs {
+  position: sticky;
+  top: 98px;
+  z-index: 4;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  padding: 10px 16px;
+  background: rgba(20, 21, 37, 0.78);
+  backdrop-filter: blur(22px);
+}
+
+.tabs button {
+  min-height: 50px;
+  display: grid;
+  place-items: center;
+  gap: 4px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.055);
+  color: var(--muted);
+  font-size: 0.7rem;
+  font-weight: 600;
+  transition:
+    transform 180ms ease,
+    background 180ms ease,
+    color 180ms ease,
+    border-color 180ms ease,
+    box-shadow 180ms ease;
+}
+
+.tabs button:hover {
+  border-color: rgba(255, 255, 255, 0.18);
+  color: #ffffff;
+}
+
+.tabs .activeTab {
+  border-color: transparent;
+  background: var(--accent-gradient);
+  color: #ffffff;
+  box-shadow: 0 14px 30px rgba(140, 91, 255, 0.28), var(--glow-blue);
+}
+
+.section {
+  margin: 16px;
+  padding: 20px;
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.sectionHeader h2 {
+  color: var(--text);
+  font-size: 1.42rem;
+  font-weight: 700;
+}
+
+.textButton {
+  min-height: 42px;
+  padding: 0 14px 0 17px;
+}
+
+.fixtureTypeSection {
+  display: grid;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.fixtureTypeSection h3 {
+  margin: 0;
+  color: var(--text);
+  font-size: 1rem;
+}
+
+.fixtureTypeOptions {
+  display: grid;
+  gap: 10px;
+}
+
+.fixtureTypeCard {
+  min-height: 78px;
+  padding: 14px;
+  display: grid;
+  grid-template-columns: 20px minmax(0, 1fr);
+  align-items: center;
+  gap: 12px;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text);
+  cursor: pointer;
+  transition:
+    border-color 180ms ease,
+    box-shadow 180ms ease,
+    background 180ms ease,
+    transform 180ms ease;
+}
+
+.fixtureTypeCard:hover {
+  transform: translateY(-1px);
+  border-color: rgba(77, 212, 255, 0.24);
+}
+
+.fixtureTypeCard input {
+  accent-color: var(--accent-blue);
+}
+
+.fixtureTypeCard span {
+  display: grid;
+  gap: 5px;
+  min-width: 0;
+}
+
+.fixtureTypeCard strong {
+  color: var(--text);
+  font-size: 0.94rem;
+}
+
+.fixtureTypeCard small {
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+.activeFixtureType {
+  border-color: rgba(77, 212, 255, 0.42);
+  background:
+    linear-gradient(135deg, rgba(253, 94, 243, 0.15), rgba(77, 212, 255, 0.12)),
+    rgba(255, 255, 255, 0.075);
+  box-shadow: var(--glow-blue);
+}
+
+.activeFixtureType strong {
+  color: #ffffff;
+}
+
+.teamGrid,
+.matchList,
+.scorerList {
+  display: grid;
+  gap: 12px;
+}
+
+.teamGrid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-top: 16px;
+}
+
+.teamCard,
+.matchCard,
+.scorerCard,
+.emptyState,
+.tableWrap,
+.scorerForm,
+.weekCard {
+  border: 1px solid var(--border);
+  border-radius: 22px;
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0.048));
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(20px);
+}
+
+.teamCard {
+  min-height: 58px;
+  padding: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  color: var(--text);
+  transition:
+    transform 180ms ease,
+    border-color 180ms ease,
+    box-shadow 180ms ease;
+}
+
+.teamCard:hover {
+  transform: translateY(-2px);
+  border-color: rgba(77, 212, 255, 0.28);
+  box-shadow: var(--shadow), var(--glow-blue);
+}
+
+.teamCard strong {
+  min-width: 0;
+  overflow: hidden;
+  color: var(--text);
+  font-size: 1rem;
+  line-height: 1.15;
+  text-overflow: ellipsis;
+}
+
+.removeTeamButton {
+  width: 36px;
+  height: 36px;
+  flex: 0 0 36px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--danger-border);
+  border-radius: 14px;
+  background: var(--danger-soft);
+  color: #ffb7c4;
+}
+
+.weekCard {
+  margin-bottom: 12px;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background:
+    linear-gradient(95deg, rgba(253, 94, 243, 0.28), rgba(140, 91, 255, 0.24), rgba(77, 212, 255, 0.18));
+}
+
+.weekCard span {
+  color: var(--muted);
+  font-size: 0.74rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.weekCard strong {
+  color: #ffffff;
+  font-size: 0.95rem;
+}
+
+.matchCard {
+  padding: 14px;
+  display: grid;
+  gap: 12px;
+}
+
+.roundLabel {
+  width: fit-content;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(77, 212, 255, 0.12);
+  color: #9be7ff;
+  font-size: 0.72rem;
+  font-weight: 700;
+  box-shadow: 0 0 18px rgba(77, 212, 255, 0.14);
+}
+
+.fixtureLine {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 46px 22px 46px minmax(0, 1fr);
+  align-items: center;
+  gap: 8px;
+}
+
+.fixtureTeam {
+  min-width: 0;
+  overflow: hidden;
+  color: var(--text);
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.fixtureTeam:last-child {
+  text-align: right;
+}
+
+.fixtureVs {
+  color: var(--accent-blue);
+  text-align: center;
+  font-size: 0.75rem;
+  font-weight: 950;
+}
+
+.fixtureLine input {
+  width: 46px;
+  height: 46px;
+  min-height: 46px;
+  padding: 0;
+  text-align: center;
+  font-weight: 950;
+}
+
+.tableWrap {
+  overflow: hidden;
+}
+
+.tableWrap table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.tableWrap th,
+.tableWrap td {
+  padding: 13px 5px;
+  text-align: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.tableWrap th:first-child,
+.tableWrap td:first-child {
+  width: 42%;
+  padding-left: 10px;
+  padding-right: 8px;
+  text-align: left;
+}
+
+.tableWrap th:not(:first-child),
+.tableWrap td:not(:first-child) {
+  width: 11.6%;
+}
+
+.tableWrap th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: rgba(255, 255, 255, 0.08);
+  color: #9be7ff;
+  font-size: 0.7rem;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.tableWrap td {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.tableWrap tbody tr {
+  position: relative;
+}
+
+.promotionRow {
+  background: rgba(67, 240, 138, 0.09);
+  box-shadow: inset 4px 0 0 var(--success);
+}
+
+.relegationRow {
+  background: rgba(255, 93, 122, 0.09);
+  box-shadow: inset 4px 0 0 var(--danger);
+}
+
+.tableWrap td:first-child {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tableWrap td:first-child span {
+  display: inline-grid;
+  width: 28px;
+  height: 28px;
+  place-items: center;
+  margin-right: 8px;
+  border-radius: 10px;
+  background: rgba(140, 91, 255, 0.16);
+  color: #c7b8ff;
+  font-size: 0.74rem;
+  font-weight: 950;
+}
+
+.promotionRow td:first-child span {
+  background: rgba(67, 240, 138, 0.14);
+  color: #b8ffd3;
+}
+
+.relegationRow td:first-child span {
+  background: rgba(255, 93, 122, 0.15);
+  color: #ffbdc8;
+}
+
+.scorerForm {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(92px, 0.68fr) 60px 46px;
+  gap: 10px;
+  margin-bottom: 16px;
+  padding: 14px;
+}
+
+.scorerForm input[aria-label="Goals"] {
+  padding: 0;
+  text-align: center;
+  font-weight: 950;
+}
+
+.scorerGuidance {
+  margin: -4px 0 16px;
+  padding: 12px 14px;
+  border: 1px solid rgba(77, 212, 255, 0.24);
+  border-radius: 16px;
+  background: rgba(77, 212, 255, 0.1);
+  color: #b8efff;
+  font-size: 0.84rem;
+  font-weight: 800;
+  line-height: 1.45;
+}
+
+.scorerCard {
+  min-height: 84px;
+  padding: 14px;
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  transition:
+    transform 180ms ease,
+    border-color 180ms ease,
+    box-shadow 180ms ease;
+}
+
+.scorerCard:hover {
+  transform: translateY(-2px);
+  border-color: rgba(255, 255, 255, 0.16);
+  box-shadow: var(--shadow), var(--glow-purple);
+}
+
+.topScorerCard {
+  border-color: rgba(253, 94, 243, 0.32);
+  background:
+    radial-gradient(circle at 100% 0%, rgba(253, 94, 243, 0.17), transparent 8rem),
+    linear-gradient(145deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.052));
+}
+
+.rank {
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  border-radius: 15px;
+  background: rgba(140, 91, 255, 0.18);
+  color: #d5caff;
+  font-weight: 950;
+}
+
+.topScorerCard .rank {
+  background: var(--accent-gradient);
+  color: #ffffff;
+  box-shadow: var(--glow-pink);
+}
+
+.scorerCard strong,
+.scorerCard p {
+  display: block;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.scorerCard strong {
+  color: var(--text);
+  font-size: 1.02rem;
+}
+
+.scorerCard p {
+  width: fit-content;
+  max-width: 100%;
+  margin: 6px 0 0;
+  padding: 4px 9px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: rgba(77, 212, 255, 0.08);
+  color: var(--muted);
+  font-size: 0.76rem;
+  font-weight: 800;
+}
+
+.goalStepper {
+  display: grid;
+  grid-template-columns: 36px 40px 36px;
+  align-items: center;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 999px;
+  background:
+    linear-gradient(135deg, rgba(253, 94, 243, 0.11), rgba(77, 212, 255, 0.08)),
+    rgba(6, 8, 21, 0.48);
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.18);
+}
+
+.goalStepper button {
+  width: 36px;
+  height: 38px;
+  border: 0;
+  background: transparent;
+  color: #b8efff;
+  font-weight: 950;
+  transition:
+    background 180ms ease,
+    color 180ms ease;
+}
+
+.goalStepper button:hover {
+  background: rgba(77, 212, 255, 0.14);
+  color: #ffffff;
+}
+
+.goalStepper span {
+  text-align: center;
+  color: var(--text);
+  font-weight: 950;
+}
+
+.emptyState {
+  margin: 14px 0 0;
+  min-height: 136px;
+  padding: 20px;
+  display: grid;
+  place-items: center;
+  gap: 10px;
+  color: var(--muted);
+  font-weight: 600;
+  line-height: 1.45;
+  text-align: center;
+}
+
+.emptyState svg {
+  color: var(--accent-blue);
+  filter: drop-shadow(0 0 18px rgba(77, 212, 255, 0.34));
+}
+
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  display: grid;
+  place-items: center;
+  padding: 18px;
+  background: rgba(6, 8, 20, 0.58);
+  backdrop-filter: blur(18px);
+  animation: fadeIn 160ms ease-out;
+}
+
+.confirmDialog {
+  position: relative;
+  width: min(100%, 430px);
+  padding: 22px;
+  display: grid;
+  gap: 13px;
+  overflow: hidden;
+  border: 1px solid var(--border-strong);
+  border-radius: 24px;
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.13), rgba(255, 255, 255, 0.06)),
+    rgba(20, 21, 37, 0.92);
+  box-shadow: var(--shadow-strong), var(--glow-purple);
+  backdrop-filter: blur(26px);
+  animation: modalIn 180ms ease-out;
+}
+
+.confirmDialog h2,
+.confirmDialog p {
+  margin: 0;
+}
+
+.confirmDialog h2 {
+  color: var(--text);
+  font-size: 1.24rem;
+  font-weight: 700;
+}
+
+.confirmDialog p {
+  color: var(--muted);
+  font-size: 0.92rem;
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+.confirmActions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.confirmActions .secondaryButton,
+.primaryActionButton,
+.dangerActionButton {
+  min-height: 46px;
+  border-radius: 16px;
+  font-weight: 600;
+}
+
+.dangerActionButton {
+  border: 1px solid var(--danger-border);
+  background:
+    linear-gradient(135deg, rgba(255, 93, 122, 0.18), rgba(253, 94, 243, 0.1));
+  color: #ffbdc8;
+}
+
+.spin {
+  animation: spin 0.8s linear infinite;
+  color: currentColor;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes modalIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.98);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spin,
+  .modalOverlay,
+  .confirmDialog {
+    animation: none;
+  }
+
+  .primaryButton,
+  .secondaryButton,
+  .textButton,
+  .dangerButton,
+  .iconButton,
+  .tournamentCard,
+  .teamCard,
+  .scorerCard,
+  .tabs button,
+  .fixtureTypeCard,
+  .goalStepper button {
+    transition: none;
+  }
+}
+
+@media (max-width: 390px) {
+  .createForm {
+    display: grid;
+  }
+
+  .createForm .primaryButton {
+    width: 100%;
+  }
+
+  .scorerForm {
+    grid-template-columns: minmax(0, 1fr) 64px 46px;
+  }
+
+  .scorerForm select {
+    grid-column: 1 / -1;
+    order: 2;
+  }
+
+  .scorerForm input[aria-label="Goals"] {
+    order: 1;
+  }
+
+  .scorerForm .iconButton {
+    order: 1;
+  }
+
+  .fixtureLine {
+    grid-template-columns: minmax(0, 1fr) 40px 18px 40px minmax(0, 1fr);
+    gap: 5px;
+  }
+
+  .fixtureLine input {
+    width: 40px;
+  }
+
+  .confirmActions {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (min-width: 520px) {
+  .login,
+  .header,
+  .heroPanel,
+  .tabs,
+  .dashboard {
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+
+  .section {
+    margin-left: 24px;
+    margin-right: 24px;
+    padding: 24px;
+  }
+
+  .teamGrid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}

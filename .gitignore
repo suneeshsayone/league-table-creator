@@ -1,0 +1,89 @@
+# Dependencies and package manager caches
+node_modules/
+.npm/
+.pnpm-store/
+.yarn/cache/
+.yarn/unplugged/
+.yarn/build-state.yml
+.yarn/install-state.gz
+
+# Build output and framework-generated files
+.next/
+out/
+dist/
+build/
+.vercel/
+.netlify/
+
+# TypeScript and generated metadata
+*.tsbuildinfo
+
+# Test, coverage, and report output
+coverage/
+.nyc_output/
+test-results/
+playwright-report/
+junit.xml
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+!.env.example.*
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+firebase-debug.log*
+firestore-debug.log*
+ui-debug.log*
+
+# OS files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Editor and local workspace files
+.vscode/
+.idea/
+.fleet/
+*.code-workspace
+*.swp
+*.swo
+*~
+
+# Local AI/MCP tool state and machine-specific config
+.code-review-graph/
+.mcp.json
+.opencode.json
+.cursor/
+.claude/settings.json
+.claude/settings.local.json
+.gemini/settings.json
+.gemini/settings.json.bak
+.gemini/hooks/
+.qoder/
+
+# Caches and temporary files
+.cache/
+.eslintcache
+.stylelintcache
+tmp/
+temp/
+
+# Local databases
+*.sqlite
+*.sqlite3
+*.db
+*.db-shm
+*.db-wal

@@ -1,0 +1,119 @@
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap");
+
+:root {
+  color-scheme: dark;
+  --app-bg: #141525;
+  --app-bg-2: #1b1c2e;
+  --app-bg-3: #202238;
+  --primary: #8c5bff;
+  --primary-dark: #5b38d7;
+  --primary-light: rgba(140, 91, 255, 0.18);
+  --accent-pink: #fd5ef3;
+  --accent-blue: #4dd4ff;
+  --accent-gradient: linear-gradient(100deg, #fd5ef3 0%, #8c5bff 52%, #4dd4ff 100%);
+  --card-bg: rgba(255, 255, 255, 0.075);
+  --card-bg-2: rgba(255, 255, 255, 0.105);
+  --input-bg: rgba(10, 12, 28, 0.58);
+  --text: #ffffff;
+  --muted: rgba(255, 255, 255, 0.65);
+  --muted-2: rgba(255, 255, 255, 0.45);
+  --border: rgba(255, 255, 255, 0.08);
+  --border-strong: rgba(255, 255, 255, 0.16);
+  --success: #43f08a;
+  --danger: #ff5d7a;
+  --danger-soft: rgba(255, 93, 122, 0.12);
+  --danger-border: rgba(255, 93, 122, 0.32);
+  --shadow: 0 18px 52px rgba(0, 0, 0, 0.28);
+  --shadow-strong: 0 26px 80px rgba(0, 0, 0, 0.42);
+  --glow-blue: 0 0 32px rgba(77, 212, 255, 0.24);
+  --glow-purple: 0 0 34px rgba(140, 91, 255, 0.28);
+  --glow-pink: 0 0 34px rgba(253, 94, 243, 0.24);
+  --radius: 22px;
+  background: #0f1020;
+  color: var(--text);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  min-height: 100%;
+  background:
+    radial-gradient(circle at 18% 16%, rgba(253, 94, 243, 0.18), transparent 23rem),
+    radial-gradient(circle at 82% 18%, rgba(77, 212, 255, 0.18), transparent 24rem),
+    radial-gradient(circle at 50% 100%, rgba(140, 91, 255, 0.18), transparent 28rem),
+    #0f1020;
+}
+
+body {
+  min-height: 100vh;
+  margin: 0;
+  font-family: "Montserrat", sans-serif;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.018) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.014) 1px, transparent 1px);
+  background-size: 42px 42px;
+  mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.55), transparent 72%);
+}
+
+.app-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 720px;
+  min-height: 100vh;
+  margin: 0 auto;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 20% 0%, rgba(253, 94, 243, 0.16), transparent 18rem),
+    radial-gradient(circle at 86% 6%, rgba(77, 212, 255, 0.14), transparent 18rem),
+    linear-gradient(180deg, var(--app-bg) 0%, var(--app-bg-2) 46%, var(--app-bg) 100%);
+  box-shadow: 0 28px 90px rgba(0, 0, 0, 0.42);
+}
+
+.app-wrapper::before,
+.app-wrapper::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+  border-radius: 999px;
+  filter: blur(12px);
+  opacity: 0.68;
+}
+
+.app-wrapper::before {
+  top: 84px;
+  right: -84px;
+  width: 190px;
+  height: 190px;
+  background: rgba(77, 212, 255, 0.16);
+}
+
+.app-wrapper::after {
+  bottom: 80px;
+  left: -72px;
+  width: 180px;
+  height: 180px;
+  background: rgba(253, 94, 243, 0.13);
+}
+
+button,
+input,
+select {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+}
