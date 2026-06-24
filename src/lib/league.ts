@@ -1,4 +1,14 @@
-import type { FixtureType, Match, Scorer, StandingRow, Team, Tournament } from "@/types/league";
+import type {
+  FixtureType,
+  Group,
+  GroupConfiguration,
+  Match,
+  Scorer,
+  StandingRow,
+  Team,
+  Tournament,
+  TournamentFormat
+} from "@/types/league";
 
 const badges = ["AFC", "CITY", "UTD", "FC", "SC", "XI", "ATH", "ROV"];
 
@@ -6,11 +16,62 @@ export function createId(prefix: string) {
   return `${prefix}-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
 }
 
-export function createTournament(name: string): Tournament {
+type CreateTournamentOptions = {
+  format?: TournamentFormat;
+  groupConfiguration?: GroupConfiguration;
+};
+
+function groupLabel(index: number) {
+  let value = index + 1;
+  let suffix = "";
+
+  while (value > 0) {
+    value -= 1;
+    suffix = String.fromCharCode(65 + (value % 26)) + suffix;
+    value = Math.floor(value / 26);
+  }
+
+  return `Group ${suffix}`;
+}
+
+export function createGroups(groupCount: number): Group[] {
+  return Array.from({ length: groupCount }, (_, index) => ({
+    id: createId("group"),
+    label: groupLabel(index),
+    teamIds: []
+  }));
+}
+
+export function requiredTeamCount(configuration?: GroupConfiguration) {
+  if (!configuration) return 0;
+  return configuration.groupCount * configuration.teamsPerGroup;
+}
+
+export function tournamentFormat(tournament: Tournament): TournamentFormat {
+  return tournament.format ?? "league";
+}
+
+export function createTournament(name: string, options: CreateTournamentOptions = {}): Tournament {
+  const format = options.format ?? "league";
+  const groupConfiguration =
+    format === "groupStage"
+      ? {
+          groupCount: Math.max(2, Math.floor(options.groupConfiguration?.groupCount ?? 2)),
+          teamsPerGroup: Math.max(2, Math.floor(options.groupConfiguration?.teamsPerGroup ?? 4))
+        }
+      : undefined;
+
   return {
     id: createId("tournament"),
     name: name.trim() || "Weekend League",
     createdAt: Date.now(),
+    format,
+    ...(groupConfiguration
+      ? {
+          groupConfiguration,
+          groups: createGroups(groupConfiguration.groupCount)
+        }
+      : {}),
     fixtureType: "single",
     fixturesGenerated: false,
     teams: [],

@@ -303,19 +303,130 @@
   padding: 20px;
 }
 
-.createForm,
 .formRow {
   display: flex;
   gap: 10px;
 }
 
-.createForm {
+.createFields {
+  display: grid;
+  gap: 16px;
   margin-top: 16px;
 }
 
-.createForm .primaryButton {
-  min-width: 96px;
+.createFields .primaryButton {
+  width: 100%;
   padding: 0 18px;
+}
+
+.fieldLabel {
+  display: grid;
+  gap: 8px;
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.fieldLabel > span {
+  padding-left: 2px;
+}
+
+.formatFieldset {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.formatFieldset legend {
+  margin-bottom: 10px;
+  color: var(--text);
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.formatOptions {
+  display: grid;
+  gap: 10px;
+}
+
+.groupConfigPanel,
+.groupOverview {
+  display: grid;
+  gap: 14px;
+  padding: 16px;
+  border: 1px solid rgba(77, 212, 255, 0.24);
+  border-radius: 20px;
+  background:
+    linear-gradient(135deg, rgba(253, 94, 243, 0.11), rgba(77, 212, 255, 0.09)),
+    rgba(255, 255, 255, 0.045);
+}
+
+.groupConfigPanel h3,
+.groupConfigPanel p,
+.groupOverview h3,
+.groupOverview p {
+  margin: 0;
+}
+
+.groupConfigPanel h3,
+.groupOverview h3 {
+  color: var(--text);
+  font-size: 1rem;
+}
+
+.groupConfigPanel p,
+.groupOverview p {
+  margin-top: 5px;
+  color: var(--muted);
+  font-size: 0.8rem;
+  font-weight: 600;
+  line-height: 1.45;
+}
+
+.groupConfigFields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.capacitySummary {
+  color: #b8efff;
+  font-size: 0.84rem;
+}
+
+.groupOverview {
+  margin-bottom: 16px;
+}
+
+.groupLabelList {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 2px;
+}
+
+.groupLabelList span {
+  flex: 0 0 auto;
+  padding: 7px 10px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: rgba(77, 212, 255, 0.08);
+  color: #b8efff;
+  font-size: 0.74rem;
+  font-weight: 800;
+}
+
+.setupGuidance {
+  margin: 12px 0 0;
+  padding: 12px 14px;
+  border: 1px solid rgba(77, 212, 255, 0.24);
+  border-radius: 16px;
+  background: rgba(77, 212, 255, 0.1);
+  color: #b8efff;
+  font-size: 0.84rem;
+  font-weight: 800;
+  line-height: 1.45;
 }
 
 .feedbackBar {
@@ -346,7 +457,7 @@
   color: #b8ffd3;
 }
 
-.createForm input,
+.createFields input:not([type="radio"]),
 .formRow input,
 .scorerForm input,
 .scorerForm select,
@@ -365,7 +476,7 @@
     background 180ms ease;
 }
 
-.createForm input,
+.createFields input:not([type="radio"]),
 .formRow input,
 .scorerForm input,
 .scorerForm select {
@@ -381,13 +492,13 @@
   color: #ffffff;
 }
 
-.createForm input::placeholder,
+.createFields input:not([type="radio"])::placeholder,
 .formRow input::placeholder,
 .scorerForm input::placeholder {
   color: var(--muted-2);
 }
 
-.createForm input:focus,
+.createFields input:not([type="radio"]):focus,
 .formRow input:focus,
 .scorerForm input:focus,
 .scorerForm select:focus,
@@ -430,8 +541,20 @@
   min-width: 0;
   overflow: hidden;
   text-align: left;
+}
+
+.tournamentCard span strong,
+.tournamentCard span small {
+  display: block;
+  overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.tournamentCard span small {
+  margin-top: 5px;
+  color: var(--muted);
+  font-size: 0.72rem;
 }
 
 .heroPanel {
@@ -1113,12 +1236,8 @@
 }
 
 @media (max-width: 390px) {
-  .createForm {
-    display: grid;
-  }
-
-  .createForm .primaryButton {
-    width: 100%;
+  .groupConfigFields {
+    grid-template-columns: 1fr;
   }
 
   .scorerForm {

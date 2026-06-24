@@ -22,10 +22,26 @@ export type Scorer = {
 
 export type FixtureType = "single" | "homeAway";
 
+export type TournamentFormat = "league" | "groupStage";
+
+export type Group = {
+  id: string;
+  label: string;
+  teamIds: string[];
+};
+
+export type GroupConfiguration = {
+  groupCount: number;
+  teamsPerGroup: number;
+};
+
 export type Tournament = {
   id: string;
   name: string;
   createdAt: number;
+  format?: TournamentFormat;
+  groupConfiguration?: GroupConfiguration;
+  groups?: Group[];
   fixtureType?: FixtureType;
   fixturesGenerated?: boolean;
   teams: Team[];

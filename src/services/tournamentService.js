@@ -23,7 +23,13 @@ export function subscribeToUserTournaments(userId, callback) {
 
   return onSnapshot(tournamentsQuery, (snapshot) => {
     const tournaments = snapshot.docs
-      .map((item) => item.data())
+      .map((item) => {
+        const tournament = item.data();
+        return {
+          ...tournament,
+          format: tournament.format ?? "league"
+        };
+      })
       .sort((a, b) => {
         const aTime = a.createdAt?.toMillis?.() || a.createdAt || 0;
         const bTime = b.createdAt?.toMillis?.() || b.createdAt || 0;
