@@ -43,6 +43,18 @@ export async function loginWithGoogle() {
       throw new Error("Google sign-in was closed before it finished.");
     }
 
+    if (error?.code === "auth/unauthorized-domain") {
+      throw new Error(
+        `Google sign-in is not authorized for ${window.location.hostname}. Add this domain in Firebase Authentication settings.`
+      );
+    }
+
+    if (error?.code === "auth/invalid-api-key") {
+      throw new Error(
+        "Google sign-in is not configured for this deployment. Check the Netlify Firebase environment variables and redeploy."
+      );
+    }
+
     throw new Error("Google sign-in failed. Please try again.");
   }
 }

@@ -20,12 +20,15 @@ import {
 } from "lucide-react";
 import type { User } from "firebase/auth";
 import { isFirebaseConfigured } from "@/lib/firebase";
+import GroupAssignmentBoard from "@/components/GroupAssignmentBoard";
 import {
   calculateStandings,
   createId,
   createTeam,
   createTournament,
   generateFixtures,
+  generateGroupFixtures,
+  groupAssignmentStatus,
   requiredTeamCount,
   sortScorers
 } from "@/lib/league";
@@ -187,6 +190,16 @@ export default function Home() {
   const groupStageTeamCountIsExact =
     selectedTournamentFormat === "groupStage" &&
     selectedTournament?.teams.length === selectedRequiredTeamCount;
+  const groupAssignment =
+    selectedTournamentFormat === "groupStage" &&
+    selectedTournament?.groupConfiguration &&
+    selectedTournament.groups
+      ? groupAssignmentStatus(
+          selectedTournament.teams,
+          selectedTournament.groups,
+          selectedTournament.groupConfiguration.teamsPerGroup
+        )
+      : null;
 
   async function persistTournament(nextTournament: Tournament) {
     if (!user) return;
@@ -307,12 +320,16 @@ export default function Home() {
     if (!selectedTournament || selectedTournament.teams.length < 2) return;
 
     const fixtureType = selectedTournament.fixtureType ?? "single";
+    const matches =
+      selectedTournamentFormat === "groupStage" && selectedTournament.groups
+        ? generateGroupFixtures(selectedTournament.teams, selectedTournament.groups, fixtureType)
+        : generateFixtures(selectedTournament.teams, fixtureType);
 
     await persistTournament({
       ...selectedTournament,
       fixtureType,
       fixturesGenerated: true,
-      matches: generateFixtures(selectedTournament.teams, fixtureType)
+      matches
     });
     setActiveTab("fixtures");
   }
@@ -328,8 +345,11 @@ export default function Home() {
         return;
       }
 
-      setSetupGuidance("Assign every team to a group before generating Group Stage fixtures.");
-      return;
+      if (!groupAssignment?.isComplete) {
+        setSetupGuidance("Fill every group and assign each team exactly once before generating fixtures.");
+        return;
+      }
+
     }
 
     setSetupGuidance("");
@@ -357,6 +377,10 @@ export default function Home() {
         fixtureType: selectedFixtureType,
         fixturesGenerated: hasGeneratedFixtures ? false : (selectedTournament.fixturesGenerated ?? false),
         teams: selectedTournament.teams.filter((item) => item.id !== team.id),
+        groups: selectedTournament.groups?.map((group) => ({
+          ...group,
+          teamIds: group.teamIds.filter((teamId) => teamId !== team.id)
+        })),
         matches: hasGeneratedFixtures ? [] : selectedTournament.matches
       });
       setActiveTab("setup");
@@ -454,6 +478,10 @@ export default function Home() {
 
   function teamNameById(teamId: string) {
     return selectedTournament?.teams.find((team) => team.id === teamId)?.name ?? "Team";
+  }
+
+  function groupNameById(groupId?: string) {
+    return selectedTournament?.groups?.find((group) => group.id === groupId)?.label;
   }
 
   async function handleGoogleLogin() {
@@ -720,7 +748,11 @@ export default function Home() {
             <button
               className={styles.textButton}
               onClick={() => void buildFixtures()}
-              disabled={selectedTournament.teams.length < 2}
+              disabled={
+                selectedTournamentFormat === "groupStage"
+                  ? !groupAssignment?.isComplete
+                  : selectedTournament.teams.length < 2
+              }
             >
               Generate <ChevronRight size={16} />
             </button>
@@ -802,6 +834,21 @@ export default function Home() {
           {selectedTournament.teams.length === 0 && (
             <EmptyState title="No teams added yet. Add teams from the Setup tab." />
           )}
+          {selectedTournamentFormat === "groupStage" &&
+            selectedTournament.groupConfiguration &&
+            selectedTournament.groups && (
+              <GroupAssignmentBoard
+                teams={selectedTournament.teams}
+                groups={selectedTournament.groups}
+                teamsPerGroup={selectedTournament.groupConfiguration.teamsPerGroup}
+                onGroupsChange={async (groups) => {
+                  await persistTournament({
+                    ...selectedTournament,
+                    groups
+                  });
+                }}
+              />
+            )}
           <button
             className={styles.dangerButton}
             onClick={() => void removeTournament(selectedTournament.id)}
@@ -832,7 +879,9 @@ export default function Home() {
           <div className={styles.matchList}>
             {selectedTournament.matches.map((match) => (
               <article className={styles.matchCard} key={match.id}>
-                <span className={styles.roundLabel}>Round {match.round}</span>
+                <span className={styles.roundLabel}>
+                  {groupNameById(match.groupId) ? `${groupNameById(match.groupId)} · ` : ""}Round {match.round}
+                </span>
                 <div className={styles.fixtureLine}>
                   <span className={styles.fixtureTeam}>{teamNameById(match.homeTeamId)}</span>
                   <input
@@ -882,6 +931,8 @@ export default function Home() {
                     <th>M</th>
                     <th>W</th>
                     <th>L</th>
+                    <th>GF</th>
+                    <th>GA</th>
                     <th>GD</th>
                     <th>PTS</th>
                   </tr>
@@ -905,6 +956,8 @@ export default function Home() {
                       <td>{row.played}</td>
                       <td>{row.won}</td>
                       <td>{row.lost}</td>
+                      <td>{row.goalsFor}</td>
+                      <td>{row.goalsAgainst}</td>
                       <td>{row.goalDifference}</td>
                       <td>{row.points}</td>
                     </tr>

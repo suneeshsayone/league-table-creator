@@ -6,6 +6,7 @@ export type Team = {
 
 export type Match = {
   id: string;
+  groupId?: string;
   round: number;
   homeTeamId: string;
   awayTeamId: string;
