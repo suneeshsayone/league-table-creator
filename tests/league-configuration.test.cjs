@@ -21,6 +21,8 @@ leagueModule.paths = module.paths;
 leagueModule._compile(compiled, sourcePath);
 
 const {
+  createTeam,
+  createTeamGradient,
   createGroups,
   createTournament,
   generateGroupFixtures,
@@ -31,6 +33,17 @@ const {
   swapGroupTeams,
   tournamentFormat
 } = leagueModule.exports;
+
+test("Teams store a two-color gradient and legacy teams receive stable defaults", () => {
+  const team = createTeam("Comets", 0, {
+    primaryColor: "#112233",
+    secondaryColor: "#aabbcc"
+  });
+
+  assert.equal(team.primaryColor, "#112233");
+  assert.equal(team.secondaryColor, "#aabbcc");
+  assert.equal(team.gradient, createTeamGradient("#112233", "#aabbcc"));
+});
 
 test("Group fixtures are generated independently without cross-group matches", () => {
   const teams = Array.from({ length: 8 }, (_, index) => ({

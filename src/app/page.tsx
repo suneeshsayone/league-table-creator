@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, type CSSProperties } from "react";
 import {
   ArrowLeft,
   ArrowRight,
@@ -8,8 +8,9 @@ import {
   ChevronRight,
   CircleUserRound,
   Goal,
-  ListPlus,
   LogOut,
+  MoreVertical,
+  Pencil,
   Plus,
   RefreshCw,
   Shield,
@@ -21,16 +22,19 @@ import {
 import type { User } from "firebase/auth";
 import { isFirebaseConfigured } from "@/lib/firebase";
 import GroupAssignmentBoard from "@/components/GroupAssignmentBoard";
+import TeamDialog, { type TeamDraft } from "@/components/TeamDialog";
 import {
   calculateStandings,
   createId,
   createTeam,
+  createTeamGradient,
   createTournament,
   generateFixtures,
   generateGroupFixtures,
   groupAssignmentStatus,
   requiredTeamCount,
-  sortScorers
+  sortScorers,
+  teamGradient
 } from "@/lib/league";
 import {
   loginWithGoogle,
@@ -64,6 +68,10 @@ type ConfirmationState = {
 type DuplicateScorerState = {
   scorerId: string;
   goalsToAdd: number;
+};
+type TeamDialogState = {
+  team?: Team;
+  teamIndex: number;
 };
 
 const tabs: { key: TabKey; label: string; icon: typeof Trophy }[] = [
@@ -117,7 +125,8 @@ export default function Home() {
   const [newTournamentFormat, setNewTournamentFormat] = useState<TournamentFormat>("league");
   const [groupCount, setGroupCount] = useState(2);
   const [teamsPerGroup, setTeamsPerGroup] = useState(4);
-  const [teamName, setTeamName] = useState("");
+  const [activeTeamMenuId, setActiveTeamMenuId] = useState<string | null>(null);
+  const [teamDialog, setTeamDialog] = useState<TeamDialogState | null>(null);
   const [scorerName, setScorerName] = useState("");
   const [scorerTeamId, setScorerTeamId] = useState("");
   const [scorerGoals, setScorerGoals] = useState(1);
@@ -270,30 +279,50 @@ export default function Home() {
   function closeTournament() {
     setSelectedTournamentId("");
     setActiveTab("setup");
-    setTeamName("");
+    setActiveTeamMenuId(null);
+    setTeamDialog(null);
     setScorerName("");
     setSetupGuidance("");
   }
 
-  async function addTeam() {
-    if (!selectedTournament || !teamName.trim()) return;
+  function startEditingTeam(team: Team, index: number) {
+    setTeamDialog({ team, teamIndex: index });
+    setActiveTeamMenuId(null);
+  }
 
-    if (
-      selectedTournamentFormat === "groupStage" &&
-      selectedRequiredTeamCount > 0 &&
-      selectedTournament.teams.length >= selectedRequiredTeamCount
-    ) {
-      setSetupGuidance(`This Group Stage is configured for exactly ${selectedRequiredTeamCount} teams.`);
-      return;
-    }
+  async function saveTeamDraft(draft: TeamDraft) {
+    if (!selectedTournament || !teamDialog) return;
 
-    await persistTournament({
+    const nextTeams = teamDialog.team
+      ? selectedTournament.teams.map((team) =>
+          team.id === teamDialog.team?.id
+            ? {
+                ...team,
+                name: draft.name,
+                primaryColor: draft.primaryColor,
+                secondaryColor: draft.secondaryColor,
+                gradient: createTeamGradient(draft.primaryColor, draft.secondaryColor)
+              }
+            : team
+        )
+      : [
+          ...selectedTournament.teams,
+          createTeam(draft.name, selectedTournament.teams.length, {
+            primaryColor: draft.primaryColor,
+            secondaryColor: draft.secondaryColor
+          })
+        ];
+    const nextTournament = {
       ...selectedTournament,
       fixtureType: selectedFixtureType,
       fixturesGenerated: selectedTournament.fixturesGenerated ?? false,
-      teams: [...selectedTournament.teams, createTeam(teamName, selectedTournament.teams.length)]
-    });
-    setTeamName("");
+      teams: nextTeams
+    };
+
+    await persistTournament(nextTournament);
+    setTournaments((current) =>
+      current.map((tournament) => tournament.id === nextTournament.id ? nextTournament : tournament)
+    );
     setSetupGuidance("");
   }
 
@@ -369,6 +398,8 @@ export default function Home() {
 
   async function removeTeam(team: Team) {
     if (!selectedTournament) return;
+
+    setActiveTeamMenuId(null);
 
     const hasGeneratedFixtures = selectedTournament.fixturesGenerated ?? selectedTournament.matches.length > 0;
     const removeSelectedTeam = async () => {
@@ -801,33 +832,55 @@ export default function Home() {
               ))}
             </div>
           </section>
-          <div className={styles.formRow}>
-            <input value={teamName} onChange={(event) => setTeamName(event.target.value)} placeholder="Team name" />
+          <div className={styles.addTeamRow}>
+            <div>
+              <strong>Teams</strong>
+              <span>Add clubs and choose their match-day colors.</span>
+            </div>
             <button
-              className={styles.iconButton}
-              title="Add team"
-              onClick={() => void addTeam()}
+              type="button"
+              className={styles.addTeamButton}
+              onClick={() => setTeamDialog({ teamIndex: selectedTournament.teams.length })}
               disabled={
                 selectedTournamentFormat === "groupStage" &&
                 selectedRequiredTeamCount > 0 &&
                 selectedTournament.teams.length >= selectedRequiredTeamCount
               }
             >
-              <ListPlus size={18} />
+              <Plus size={18} /> Add Team
             </button>
           </div>
           {setupGuidance && <p className={styles.setupGuidance}>{setupGuidance}</p>}
           <div className={styles.teamGrid}>
-            {selectedTournament.teams.map((team) => (
-              <div className={styles.teamCard} key={team.id}>
+            {selectedTournament.teams.map((team, index) => (
+              <div
+                className={styles.teamCard}
+                key={team.id}
+                style={{ "--team-gradient": teamGradient(team, index) } as CSSProperties}
+              >
                 <strong>{team.name}</strong>
-                <button
-                  className={styles.removeTeamButton}
-                  title={`Remove ${team.name}`}
-                  onClick={() => void removeTeam(team)}
-                >
-                  <Trash2 size={16} />
-                </button>
+                <div className={styles.teamActions}>
+                  <button
+                    type="button"
+                    className={styles.moreTeamButton}
+                    title={`More actions for ${team.name}`}
+                    aria-label={`More actions for ${team.name}`}
+                    aria-expanded={activeTeamMenuId === team.id}
+                    onClick={() => setActiveTeamMenuId((current) => current === team.id ? null : team.id)}
+                  >
+                    <MoreVertical size={18} />
+                  </button>
+                  {activeTeamMenuId === team.id && (
+                    <div className={styles.teamMenu} role="menu">
+                      <button role="menuitem" onClick={() => startEditingTeam(team, index)}>
+                        <Pencil size={15} /> Edit
+                      </button>
+                      <button role="menuitem" className={styles.teamMenuDelete} onClick={() => void removeTeam(team)}>
+                        <Trash2 size={15} /> Delete
+                      </button>
+                    </div>
+                  )}
+                </div>
               </div>
             ))}
           </div>
@@ -1057,6 +1110,16 @@ export default function Home() {
             </div>
           </section>
         </div>
+      )}
+
+      {teamDialog && selectedTournament && (
+        <TeamDialog
+          team={teamDialog.team}
+          teamIndex={teamDialog.teamIndex}
+          existingTeams={selectedTournament.teams}
+          onSave={saveTeamDraft}
+          onClose={() => setTeamDialog(null)}
+        />
       )}
 
       {confirmation && (

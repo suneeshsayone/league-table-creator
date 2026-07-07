@@ -308,6 +308,56 @@
   gap: 10px;
 }
 
+.addTeamRow {
+  padding: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  background: rgba(8, 11, 27, 0.38);
+}
+
+.addTeamRow > div {
+  min-width: 0;
+  display: grid;
+  gap: 4px;
+}
+
+.addTeamRow strong {
+  color: var(--text);
+  font-size: 0.92rem;
+}
+
+.addTeamRow span {
+  color: var(--muted);
+  font-size: 0.76rem;
+  font-weight: 600;
+}
+
+.addTeamButton {
+  min-height: 44px;
+  padding: 0 16px;
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 0;
+  border-radius: 15px;
+  background: var(--accent-gradient);
+  color: #fff;
+  font-weight: 750;
+  box-shadow: 0 12px 28px rgba(140, 91, 255, 0.28), var(--glow-blue);
+}
+
+.addTeamButton:disabled {
+  opacity: 0.48;
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
 .createFields {
   display: grid;
   gap: 16px;
@@ -1042,17 +1092,26 @@
 }
 
 .teamCard {
+  position: relative;
   min-height: 58px;
   padding: 15px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  color: var(--text);
+  background:
+    linear-gradient(135deg, rgba(4, 6, 18, 0.22), rgba(4, 6, 18, 0.34)),
+    var(--team-gradient, linear-gradient(135deg, #7c3aed, #06b6d4));
+  color: #ffffff;
+  box-shadow: var(--shadow), inset 0 0 0 1px rgba(255, 255, 255, 0.08);
   transition:
     transform 180ms ease,
     border-color 180ms ease,
     box-shadow 180ms ease;
+}
+
+.teamCard:focus-within {
+  z-index: 3;
 }
 
 .teamCard:hover {
@@ -1064,21 +1123,76 @@
 .teamCard strong {
   min-width: 0;
   overflow: hidden;
-  color: var(--text);
+  color: #ffffff;
   font-size: 1rem;
   line-height: 1.15;
   text-overflow: ellipsis;
+  white-space: nowrap;
+  text-shadow: 0 1px 5px rgba(0, 0, 0, 0.85);
 }
 
-.removeTeamButton {
+.teamActions {
+  position: relative;
+  flex: 0 0 auto;
+}
+
+.moreTeamButton {
   width: 36px;
   height: 36px;
   flex: 0 0 36px;
   display: grid;
   place-items: center;
-  border: 1px solid var(--danger-border);
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, 0.24);
   border-radius: 14px;
-  background: var(--danger-soft);
+  background: rgba(7, 9, 22, 0.38);
+  color: #ffffff;
+  box-shadow: 0 5px 14px rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(12px);
+}
+
+.moreTeamButton:hover,
+.moreTeamButton[aria-expanded="true"] {
+  background: rgba(7, 9, 22, 0.7);
+  border-color: rgba(255, 255, 255, 0.42);
+}
+
+.teamMenu {
+  position: absolute;
+  top: calc(100% + 7px);
+  right: 0;
+  z-index: 6;
+  width: 132px;
+  padding: 6px;
+  display: grid;
+  gap: 3px;
+  border: 1px solid var(--border-strong);
+  border-radius: 14px;
+  background: rgba(17, 19, 36, 0.96);
+  box-shadow: 0 18px 38px rgba(0, 0, 0, 0.44), var(--glow-purple);
+  backdrop-filter: blur(20px);
+}
+
+.teamMenu button {
+  min-height: 36px;
+  padding: 0 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 0;
+  border-radius: 9px;
+  background: transparent;
+  color: var(--text);
+  font-size: 0.8rem;
+  font-weight: 750;
+  text-align: left;
+}
+
+.teamMenu button:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.teamMenu .teamMenuDelete {
   color: #ffb7c4;
 }
 
@@ -1514,6 +1628,11 @@
 }
 
 @media (max-width: 390px) {
+  .addTeamRow {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
   .groupConfigFields {
     grid-template-columns: 1fr;
   }

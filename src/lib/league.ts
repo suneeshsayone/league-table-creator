@@ -12,6 +12,36 @@ import type {
 
 const badges = ["AFC", "CITY", "UTD", "FC", "SC", "XI", "ATH", "ROV"];
 
+export const teamColorPresets = [
+  { name: "Electric", primaryColor: "#7c3aed", secondaryColor: "#06b6d4" },
+  { name: "Blaze", primaryColor: "#ef4444", secondaryColor: "#f59e0b" },
+  { name: "Emerald", primaryColor: "#059669", secondaryColor: "#22c55e" },
+  { name: "Royal", primaryColor: "#1d4ed8", secondaryColor: "#7c3aed" },
+  { name: "Sunset", primaryColor: "#db2777", secondaryColor: "#f97316" },
+  { name: "Midnight", primaryColor: "#334155", secondaryColor: "#0f172a" }
+] as const;
+
+export function createTeamGradient(primaryColor: string, secondaryColor: string) {
+  return `linear-gradient(135deg, ${primaryColor}, ${secondaryColor})`;
+}
+
+export function normalizeTeamColors(team: Team, index = 0): Team {
+  const preset = teamColorPresets[index % teamColorPresets.length];
+  const primaryColor = team.primaryColor ?? preset.primaryColor;
+  const secondaryColor = team.secondaryColor ?? preset.secondaryColor;
+
+  return {
+    ...team,
+    primaryColor,
+    secondaryColor,
+    gradient: createTeamGradient(primaryColor, secondaryColor)
+  };
+}
+
+export function teamGradient(team: Team, index = 0) {
+  return normalizeTeamColors(team, index).gradient as string;
+}
+
 export function createId(prefix: string) {
   return `${prefix}-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
 }
@@ -229,12 +259,17 @@ export function createTournament(name: string, options: CreateTournamentOptions 
   };
 }
 
-export function createTeam(name: string, index: number): Team {
-  return {
+export function createTeam(
+  name: string,
+  index: number,
+  colors?: { primaryColor: string; secondaryColor: string }
+): Team {
+  return normalizeTeamColors({
     id: createId("team"),
     name: name.trim(),
-    badge: badges[index % badges.length]
-  };
+    badge: badges[index % badges.length],
+    ...colors
+  }, index);
 }
 
 export function generateFixtures(teams: Team[], fixtureType: FixtureType = "single"): Match[] {

@@ -2,6 +2,9 @@ export type Team = {
   id: string;
   name: string;
   badge: string;
+  primaryColor?: string;
+  secondaryColor?: string;
+  gradient?: string;
 };
 
 export type Match = {

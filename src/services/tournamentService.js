@@ -27,7 +27,26 @@ export function subscribeToUserTournaments(userId, callback) {
         const tournament = item.data();
         return {
           ...tournament,
-          format: tournament.format ?? "league"
+          format: tournament.format ?? "league",
+          teams: (tournament.teams ?? []).map((team, index) => {
+            const presets = [
+              ["#7c3aed", "#06b6d4"],
+              ["#ef4444", "#f59e0b"],
+              ["#059669", "#22c55e"],
+              ["#1d4ed8", "#7c3aed"],
+              ["#db2777", "#f97316"],
+              ["#334155", "#0f172a"]
+            ];
+            const [defaultPrimary, defaultSecondary] = presets[index % presets.length];
+            const primaryColor = team.primaryColor ?? defaultPrimary;
+            const secondaryColor = team.secondaryColor ?? defaultSecondary;
+            return {
+              ...team,
+              primaryColor,
+              secondaryColor,
+              gradient: `linear-gradient(135deg, ${primaryColor}, ${secondaryColor})`
+            };
+          })
         };
       })
       .sort((a, b) => {
