@@ -303,19 +303,458 @@
   padding: 20px;
 }
 
-.createForm,
 .formRow {
   display: flex;
   gap: 10px;
 }
 
-.createForm {
+.addTeamRow {
+  padding: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  background: rgba(8, 11, 27, 0.38);
+}
+
+.addTeamRow > div {
+  min-width: 0;
+  display: grid;
+  gap: 4px;
+}
+
+.addTeamRow strong {
+  color: var(--text);
+  font-size: 0.92rem;
+}
+
+.addTeamRow span {
+  color: var(--muted);
+  font-size: 0.76rem;
+  font-weight: 600;
+}
+
+.addTeamButton {
+  min-height: 44px;
+  padding: 0 16px;
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 0;
+  border-radius: 15px;
+  background: var(--accent-gradient);
+  color: #fff;
+  font-weight: 750;
+  box-shadow: 0 12px 28px rgba(140, 91, 255, 0.28), var(--glow-blue);
+}
+
+.addTeamButton:disabled {
+  opacity: 0.48;
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
+.createFields {
+  display: grid;
+  gap: 16px;
   margin-top: 16px;
 }
 
-.createForm .primaryButton {
-  min-width: 96px;
+.createFields .primaryButton {
+  width: 100%;
   padding: 0 18px;
+}
+
+.fieldLabel {
+  display: grid;
+  gap: 8px;
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.fieldLabel > span {
+  padding-left: 2px;
+}
+
+.formatFieldset {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.formatFieldset legend {
+  margin-bottom: 10px;
+  color: var(--text);
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.formatOptions {
+  display: grid;
+  gap: 10px;
+}
+
+.groupConfigPanel,
+.groupOverview {
+  display: grid;
+  gap: 14px;
+  padding: 16px;
+  border: 1px solid rgba(77, 212, 255, 0.24);
+  border-radius: 20px;
+  background:
+    linear-gradient(135deg, rgba(253, 94, 243, 0.11), rgba(77, 212, 255, 0.09)),
+    rgba(255, 255, 255, 0.045);
+}
+
+.groupConfigPanel h3,
+.groupConfigPanel p,
+.groupOverview h3,
+.groupOverview p {
+  margin: 0;
+}
+
+.groupConfigPanel h3,
+.groupOverview h3 {
+  color: var(--text);
+  font-size: 1rem;
+}
+
+.groupConfigPanel p,
+.groupOverview p {
+  margin-top: 5px;
+  color: var(--muted);
+  font-size: 0.8rem;
+  font-weight: 600;
+  line-height: 1.45;
+}
+
+.groupConfigFields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.capacitySummary {
+  color: #b8efff;
+  font-size: 0.84rem;
+}
+
+.groupOverview {
+  margin-bottom: 16px;
+}
+
+.groupLabelList {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 2px;
+}
+
+.groupLabelList span {
+  flex: 0 0 auto;
+  padding: 7px 10px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: rgba(77, 212, 255, 0.08);
+  color: #b8efff;
+  font-size: 0.74rem;
+  font-weight: 800;
+}
+
+.setupGuidance {
+  margin: 12px 0 0;
+  padding: 12px 14px;
+  border: 1px solid rgba(77, 212, 255, 0.24);
+  border-radius: 16px;
+  background: rgba(77, 212, 255, 0.1);
+  color: #b8efff;
+  font-size: 0.84rem;
+  font-weight: 800;
+  line-height: 1.45;
+}
+
+.assignmentSection {
+  display: grid;
+  gap: 14px;
+  margin-top: 24px;
+  padding-top: 22px;
+  border-top: 1px solid var(--border);
+}
+
+.assignmentHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.assignmentHeader h3,
+.assignmentHeader p {
+  margin: 0;
+}
+
+.assignmentHeader h3 {
+  color: var(--text);
+  font-size: 1.22rem;
+}
+
+.assignmentHeader p:not(.eyebrow) {
+  margin-top: 6px;
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.assignmentHeader .secondaryButton {
+  min-width: fit-content;
+  padding: 0 14px;
+}
+
+.assignmentStatus,
+.assignmentMessage {
+  margin: 0;
+  padding: 12px 14px;
+  border: 1px solid rgba(255, 196, 74, 0.26);
+  border-radius: 16px;
+  background: rgba(255, 196, 74, 0.09);
+  color: #ffe2a3;
+  font-size: 0.82rem;
+  font-weight: 800;
+  line-height: 1.45;
+}
+
+.assignmentComplete {
+  border-color: rgba(67, 240, 138, 0.28);
+  background: rgba(67, 240, 138, 0.1);
+  color: #b8ffd3;
+}
+
+.assignmentMessage {
+  border-color: rgba(77, 212, 255, 0.24);
+  background: rgba(77, 212, 255, 0.09);
+  color: #b8efff;
+}
+
+.assignmentBoard {
+  display: grid;
+  gap: 12px;
+}
+
+.assignmentGroup {
+  min-width: 0;
+  padding: 14px;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.045);
+  transition:
+    border-color 160ms ease,
+    background 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.assignmentGroup > header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.assignmentGroup > header div {
+  min-width: 0;
+}
+
+.assignmentGroup > header strong,
+.assignmentGroup > header span {
+  display: block;
+}
+
+.assignmentGroup > header strong {
+  overflow: hidden;
+  color: var(--text);
+  font-size: 0.9rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.assignmentGroup > header span {
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.assignmentGroupFull {
+  border-color: rgba(255, 196, 74, 0.24);
+  background: rgba(255, 196, 74, 0.045);
+}
+
+.assignmentDropTarget {
+  border-color: rgba(77, 212, 255, 0.58);
+  background: rgba(77, 212, 255, 0.1);
+  box-shadow: var(--glow-blue);
+}
+
+.assignmentTeamList {
+  display: grid;
+  gap: 8px;
+  min-height: 54px;
+}
+
+.assignmentTeam {
+  display: grid;
+  grid-template-columns: 38px minmax(0, 1fr);
+  align-items: center;
+  gap: 10px;
+  min-height: 52px;
+  padding: 6px 12px 6px 6px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0.045));
+  color: var(--text);
+  touch-action: manipulation;
+  transition:
+    transform 160ms ease,
+    opacity 160ms ease,
+    border-color 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.assignmentTeam strong {
+  overflow: hidden;
+  font-size: 0.86rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.assignmentTeamDragging {
+  z-index: 10;
+  opacity: 0.72;
+  transform: scale(1.025);
+  border-color: rgba(253, 94, 243, 0.52);
+  box-shadow: var(--glow-pink), var(--shadow);
+}
+
+.assignmentTeamTarget {
+  border-color: rgba(77, 212, 255, 0.46);
+  box-shadow: var(--glow-blue);
+}
+
+.dragHandle {
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 12px;
+  background: rgba(140, 91, 255, 0.14);
+  color: #cfc3ff;
+  cursor: grab;
+  touch-action: none;
+}
+
+.dragHandle:active {
+  cursor: grabbing;
+}
+
+.assignmentEmpty {
+  min-height: 54px;
+  display: grid;
+  place-items: center;
+  border: 1px dashed rgba(77, 212, 255, 0.28);
+  border-radius: 16px;
+  color: var(--muted-2);
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.groupAddButton {
+  min-height: 34px;
+  padding: 0 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: rgba(77, 212, 255, 0.08);
+  color: #b8efff;
+  font-size: 0.74rem;
+  font-weight: 800;
+}
+
+.groupAddButton:disabled {
+  opacity: 0.42;
+}
+
+.modalCloseButton {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.07);
+  color: var(--text);
+}
+
+.assignmentSearch {
+  min-height: 46px;
+  padding: 0 12px;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 8px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--input-bg);
+  color: var(--muted);
+}
+
+.assignmentSearch input {
+  width: 100%;
+  min-height: 42px;
+  border: 0;
+  background: transparent;
+  color: var(--text);
+  outline: 0;
+}
+
+.assignmentPicker {
+  display: grid;
+  gap: 8px;
+  max-height: 280px;
+  overflow-y: auto;
+}
+
+.assignmentPicker button {
+  min-height: 44px;
+  padding: 0 13px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text);
+  text-align: left;
+  font-weight: 800;
+}
+
+.assignmentPicker button:hover {
+  border-color: rgba(77, 212, 255, 0.34);
+  background: rgba(77, 212, 255, 0.1);
+}
+
+.assignmentPicker p {
+  margin: 0;
+  color: var(--muted);
 }
 
 .feedbackBar {
@@ -346,7 +785,7 @@
   color: #b8ffd3;
 }
 
-.createForm input,
+.createFields input:not([type="radio"]),
 .formRow input,
 .scorerForm input,
 .scorerForm select,
@@ -365,7 +804,7 @@
     background 180ms ease;
 }
 
-.createForm input,
+.createFields input:not([type="radio"]),
 .formRow input,
 .scorerForm input,
 .scorerForm select {
@@ -381,13 +820,13 @@
   color: #ffffff;
 }
 
-.createForm input::placeholder,
+.createFields input:not([type="radio"])::placeholder,
 .formRow input::placeholder,
 .scorerForm input::placeholder {
   color: var(--muted-2);
 }
 
-.createForm input:focus,
+.createFields input:not([type="radio"]):focus,
 .formRow input:focus,
 .scorerForm input:focus,
 .scorerForm select:focus,
@@ -430,8 +869,20 @@
   min-width: 0;
   overflow: hidden;
   text-align: left;
+}
+
+.tournamentCard span strong,
+.tournamentCard span small {
+  display: block;
+  overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.tournamentCard span small {
+  margin-top: 5px;
+  color: var(--muted);
+  font-size: 0.72rem;
 }
 
 .heroPanel {
@@ -641,17 +1092,26 @@
 }
 
 .teamCard {
+  position: relative;
   min-height: 58px;
   padding: 15px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  color: var(--text);
+  background:
+    linear-gradient(135deg, rgba(4, 6, 18, 0.22), rgba(4, 6, 18, 0.34)),
+    var(--team-gradient, linear-gradient(135deg, #7c3aed, #06b6d4));
+  color: #ffffff;
+  box-shadow: var(--shadow), inset 0 0 0 1px rgba(255, 255, 255, 0.08);
   transition:
     transform 180ms ease,
     border-color 180ms ease,
     box-shadow 180ms ease;
+}
+
+.teamCard:focus-within {
+  z-index: 3;
 }
 
 .teamCard:hover {
@@ -663,21 +1123,76 @@
 .teamCard strong {
   min-width: 0;
   overflow: hidden;
-  color: var(--text);
+  color: #ffffff;
   font-size: 1rem;
   line-height: 1.15;
   text-overflow: ellipsis;
+  white-space: nowrap;
+  text-shadow: 0 1px 5px rgba(0, 0, 0, 0.85);
 }
 
-.removeTeamButton {
+.teamActions {
+  position: relative;
+  flex: 0 0 auto;
+}
+
+.moreTeamButton {
   width: 36px;
   height: 36px;
   flex: 0 0 36px;
   display: grid;
   place-items: center;
-  border: 1px solid var(--danger-border);
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, 0.24);
   border-radius: 14px;
-  background: var(--danger-soft);
+  background: rgba(7, 9, 22, 0.38);
+  color: #ffffff;
+  box-shadow: 0 5px 14px rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(12px);
+}
+
+.moreTeamButton:hover,
+.moreTeamButton[aria-expanded="true"] {
+  background: rgba(7, 9, 22, 0.7);
+  border-color: rgba(255, 255, 255, 0.42);
+}
+
+.teamMenu {
+  position: absolute;
+  top: calc(100% + 7px);
+  right: 0;
+  z-index: 6;
+  width: 132px;
+  padding: 6px;
+  display: grid;
+  gap: 3px;
+  border: 1px solid var(--border-strong);
+  border-radius: 14px;
+  background: rgba(17, 19, 36, 0.96);
+  box-shadow: 0 18px 38px rgba(0, 0, 0, 0.44), var(--glow-purple);
+  backdrop-filter: blur(20px);
+}
+
+.teamMenu button {
+  min-height: 36px;
+  padding: 0 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 0;
+  border-radius: 9px;
+  background: transparent;
+  color: var(--text);
+  font-size: 0.8rem;
+  font-weight: 750;
+  text-align: left;
+}
+
+.teamMenu button:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.teamMenu .teamMenuDelete {
   color: #ffb7c4;
 }
 
@@ -777,7 +1292,7 @@
 
 .tableWrap th:first-child,
 .tableWrap td:first-child {
-  width: 42%;
+  width: 35%;
   padding-left: 10px;
   padding-right: 8px;
   text-align: left;
@@ -785,7 +1300,7 @@
 
 .tableWrap th:not(:first-child),
 .tableWrap td:not(:first-child) {
-  width: 11.6%;
+  width: 9.28%;
 }
 
 .tableWrap th {
@@ -1113,12 +1628,13 @@
 }
 
 @media (max-width: 390px) {
-  .createForm {
-    display: grid;
+  .addTeamRow {
+    align-items: stretch;
+    flex-direction: column;
   }
 
-  .createForm .primaryButton {
-    width: 100%;
+  .groupConfigFields {
+    grid-template-columns: 1fr;
   }
 
   .scorerForm {
@@ -1170,5 +1686,9 @@
 
   .teamGrid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .assignmentBoard {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }

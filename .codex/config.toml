@@ -1,0 +1,13 @@
+[mcp_servers.code-review-graph]
+command = 'C:\Python314\python.exe'
+args = [
+    "-m",
+    "code_review_graph",
+    "serve",
+]
+
+[mcp_servers.code-review-graph.tools.get_community_tool]
+approval_mode = "approve"
+
+[mcp_servers.code-review-graph.tools.get_flow_tool]
+approval_mode = "approve"

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, type CSSProperties } from "react";
 import {
   ArrowLeft,
   ArrowRight,
@@ -8,8 +8,9 @@ import {
   ChevronRight,
   CircleUserRound,
   Goal,
-  ListPlus,
   LogOut,
+  MoreVertical,
+  Pencil,
   Plus,
   RefreshCw,
   Shield,
@@ -20,13 +21,20 @@ import {
 } from "lucide-react";
 import type { User } from "firebase/auth";
 import { isFirebaseConfigured } from "@/lib/firebase";
+import GroupAssignmentBoard from "@/components/GroupAssignmentBoard";
+import TeamDialog, { type TeamDraft } from "@/components/TeamDialog";
 import {
   calculateStandings,
   createId,
   createTeam,
+  createTeamGradient,
   createTournament,
   generateFixtures,
-  sortScorers
+  generateGroupFixtures,
+  groupAssignmentStatus,
+  requiredTeamCount,
+  sortScorers,
+  teamGradient
 } from "@/lib/league";
 import {
   loginWithGoogle,
@@ -39,7 +47,14 @@ import {
   subscribeToUserTournaments,
   syncTournamentCollections
 } from "@/services/tournamentService";
-import type { FixtureType, Match, Scorer, Team, Tournament } from "@/types/league";
+import type {
+  FixtureType,
+  Match,
+  Scorer,
+  Team,
+  Tournament,
+  TournamentFormat
+} from "@/types/league";
 import styles from "./page.module.css";
 
 type TabKey = "setup" | "fixtures" | "table" | "scorers";
@@ -53,6 +68,10 @@ type ConfirmationState = {
 type DuplicateScorerState = {
   scorerId: string;
   goalsToAdd: number;
+};
+type TeamDialogState = {
+  team?: Team;
+  teamIndex: number;
 };
 
 const tabs: { key: TabKey; label: string; icon: typeof Trophy }[] = [
@@ -75,6 +94,23 @@ const fixtureTypeOptions: { value: FixtureType; title: string; description: stri
   }
 ];
 
+const tournamentFormatOptions: {
+  value: TournamentFormat;
+  title: string;
+  description: string;
+}[] = [
+  {
+    value: "league",
+    title: "League",
+    description: "One table where every team plays the competition schedule."
+  },
+  {
+    value: "groupStage",
+    title: "Group Stage",
+    description: "Multiple independent groups with their own fixtures and tables."
+  }
+];
+
 function normalizePlayerName(name: string) {
   return name.trim().toLocaleLowerCase();
 }
@@ -86,7 +122,11 @@ export default function Home() {
   const [selectedTournamentId, setSelectedTournamentId] = useState("");
   const [activeTab, setActiveTab] = useState<TabKey>("setup");
   const [tournamentName, setTournamentName] = useState("");
-  const [teamName, setTeamName] = useState("");
+  const [newTournamentFormat, setNewTournamentFormat] = useState<TournamentFormat>("league");
+  const [groupCount, setGroupCount] = useState(2);
+  const [teamsPerGroup, setTeamsPerGroup] = useState(4);
+  const [activeTeamMenuId, setActiveTeamMenuId] = useState<string | null>(null);
+  const [teamDialog, setTeamDialog] = useState<TeamDialogState | null>(null);
   const [scorerName, setScorerName] = useState("");
   const [scorerTeamId, setScorerTeamId] = useState("");
   const [scorerGoals, setScorerGoals] = useState(1);
@@ -97,6 +137,7 @@ export default function Home() {
   const [confirmation, setConfirmation] = useState<ConfirmationState | null>(null);
   const [duplicateScorer, setDuplicateScorer] = useState<DuplicateScorerState | null>(null);
   const [scorerGuidance, setScorerGuidance] = useState("");
+  const [setupGuidance, setSetupGuidance] = useState("");
 
   useEffect(() => {
     if (!isFirebaseConfigured) {
@@ -152,6 +193,22 @@ export default function Home() {
   );
 
   const selectedFixtureType = selectedTournament?.fixtureType ?? "single";
+  const selectedTournamentFormat = selectedTournament?.format ?? "league";
+  const selectedRequiredTeamCount = requiredTeamCount(selectedTournament?.groupConfiguration);
+  const newTournamentRequiredTeamCount = groupCount * teamsPerGroup;
+  const groupStageTeamCountIsExact =
+    selectedTournamentFormat === "groupStage" &&
+    selectedTournament?.teams.length === selectedRequiredTeamCount;
+  const groupAssignment =
+    selectedTournamentFormat === "groupStage" &&
+    selectedTournament?.groupConfiguration &&
+    selectedTournament.groups
+      ? groupAssignmentStatus(
+          selectedTournament.teams,
+          selectedTournament.groups,
+          selectedTournament.groupConfiguration.teamsPerGroup
+        )
+      : null;
 
   async function persistTournament(nextTournament: Tournament) {
     if (!user) return;
@@ -184,13 +241,25 @@ export default function Home() {
     setIsCreatingTournament(true);
 
     try {
-      const nextTournament = createTournament(trimmedName);
+      const nextTournament = createTournament(trimmedName, {
+        format: newTournamentFormat,
+        groupConfiguration:
+          newTournamentFormat === "groupStage"
+            ? {
+                groupCount,
+                teamsPerGroup
+              }
+            : undefined
+      });
       await persistTournament(nextTournament);
       setTournaments((current) => {
         const withoutDuplicate = current.filter((item) => item.id !== nextTournament.id);
         return [nextTournament, ...withoutDuplicate];
       });
       setTournamentName("");
+      setNewTournamentFormat("league");
+      setGroupCount(2);
+      setTeamsPerGroup(4);
       setCreateSuccess("Tournament created. Open it from the list below.");
     } catch (error) {
       console.error("Tournament creation failed:", error);
@@ -210,20 +279,51 @@ export default function Home() {
   function closeTournament() {
     setSelectedTournamentId("");
     setActiveTab("setup");
-    setTeamName("");
+    setActiveTeamMenuId(null);
+    setTeamDialog(null);
     setScorerName("");
+    setSetupGuidance("");
   }
 
-  async function addTeam() {
-    if (!selectedTournament || !teamName.trim()) return;
+  function startEditingTeam(team: Team, index: number) {
+    setTeamDialog({ team, teamIndex: index });
+    setActiveTeamMenuId(null);
+  }
 
-    await persistTournament({
+  async function saveTeamDraft(draft: TeamDraft) {
+    if (!selectedTournament || !teamDialog) return;
+
+    const nextTeams = teamDialog.team
+      ? selectedTournament.teams.map((team) =>
+          team.id === teamDialog.team?.id
+            ? {
+                ...team,
+                name: draft.name,
+                primaryColor: draft.primaryColor,
+                secondaryColor: draft.secondaryColor,
+                gradient: createTeamGradient(draft.primaryColor, draft.secondaryColor)
+              }
+            : team
+        )
+      : [
+          ...selectedTournament.teams,
+          createTeam(draft.name, selectedTournament.teams.length, {
+            primaryColor: draft.primaryColor,
+            secondaryColor: draft.secondaryColor
+          })
+        ];
+    const nextTournament = {
       ...selectedTournament,
       fixtureType: selectedFixtureType,
       fixturesGenerated: selectedTournament.fixturesGenerated ?? false,
-      teams: [...selectedTournament.teams, createTeam(teamName, selectedTournament.teams.length)]
-    });
-    setTeamName("");
+      teams: nextTeams
+    };
+
+    await persistTournament(nextTournament);
+    setTournaments((current) =>
+      current.map((tournament) => tournament.id === nextTournament.id ? nextTournament : tournament)
+    );
+    setSetupGuidance("");
   }
 
   function askConfirmation(nextConfirmation: ConfirmationState) {
@@ -249,18 +349,39 @@ export default function Home() {
     if (!selectedTournament || selectedTournament.teams.length < 2) return;
 
     const fixtureType = selectedTournament.fixtureType ?? "single";
+    const matches =
+      selectedTournamentFormat === "groupStage" && selectedTournament.groups
+        ? generateGroupFixtures(selectedTournament.teams, selectedTournament.groups, fixtureType)
+        : generateFixtures(selectedTournament.teams, fixtureType);
 
     await persistTournament({
       ...selectedTournament,
       fixtureType,
       fixturesGenerated: true,
-      matches: generateFixtures(selectedTournament.teams, fixtureType)
+      matches
     });
     setActiveTab("fixtures");
   }
 
   async function buildFixtures() {
     if (!selectedTournament || selectedTournament.teams.length < 2) return;
+
+    if (selectedTournamentFormat === "groupStage") {
+      if (!groupStageTeamCountIsExact) {
+        setSetupGuidance(
+          `Add exactly ${selectedRequiredTeamCount} teams before generating Group Stage fixtures.`
+        );
+        return;
+      }
+
+      if (!groupAssignment?.isComplete) {
+        setSetupGuidance("Fill every group and assign each team exactly once before generating fixtures.");
+        return;
+      }
+
+    }
+
+    setSetupGuidance("");
 
     if (selectedTournament.matches.length > 0) {
       askConfirmation({
@@ -278,6 +399,8 @@ export default function Home() {
   async function removeTeam(team: Team) {
     if (!selectedTournament) return;
 
+    setActiveTeamMenuId(null);
+
     const hasGeneratedFixtures = selectedTournament.fixturesGenerated ?? selectedTournament.matches.length > 0;
     const removeSelectedTeam = async () => {
       await persistTournament({
@@ -285,6 +408,10 @@ export default function Home() {
         fixtureType: selectedFixtureType,
         fixturesGenerated: hasGeneratedFixtures ? false : (selectedTournament.fixturesGenerated ?? false),
         teams: selectedTournament.teams.filter((item) => item.id !== team.id),
+        groups: selectedTournament.groups?.map((group) => ({
+          ...group,
+          teamIds: group.teamIds.filter((teamId) => teamId !== team.id)
+        })),
         matches: hasGeneratedFixtures ? [] : selectedTournament.matches
       });
       setActiveTab("setup");
@@ -384,6 +511,10 @@ export default function Home() {
     return selectedTournament?.teams.find((team) => team.id === teamId)?.name ?? "Team";
   }
 
+  function groupNameById(groupId?: string) {
+    return selectedTournament?.groups?.find((group) => group.id === groupId)?.label;
+  }
+
   async function handleGoogleLogin() {
     setAuthError("");
 
@@ -457,23 +588,88 @@ export default function Home() {
           <div className={styles.createCard}>
             <div className={styles.sectionHeader}>
               <div>
-                <p className={styles.eyebrow}>New league</p>
+                <p className={styles.eyebrow}>New tournament</p>
                 <h2>Create Tournament</h2>
               </div>
             </div>
-            <div className={styles.createForm}>
-              <input
-                value={tournamentName}
-                onChange={(event) => setTournamentName(event.target.value)}
-                placeholder="Tournament name"
-              />
+            <div className={styles.createFields}>
+              <label className={styles.fieldLabel}>
+                <span>Tournament name</span>
+                <input
+                  value={tournamentName}
+                  onChange={(event) => setTournamentName(event.target.value)}
+                  placeholder="Summer Cup"
+                />
+              </label>
+              <fieldset className={styles.formatFieldset}>
+                <legend>Tournament Format</legend>
+                <div className={styles.formatOptions}>
+                  {tournamentFormatOptions.map((option) => (
+                    <label
+                      key={option.value}
+                      className={`${styles.fixtureTypeCard} ${
+                        newTournamentFormat === option.value ? styles.activeFixtureType : ""
+                      }`}
+                    >
+                      <input
+                        type="radio"
+                        name="tournamentFormat"
+                        value={option.value}
+                        checked={newTournamentFormat === option.value}
+                        onChange={() => setNewTournamentFormat(option.value)}
+                      />
+                      <span>
+                        <strong>{option.title}</strong>
+                        <small>{option.description}</small>
+                      </span>
+                    </label>
+                  ))}
+                </div>
+              </fieldset>
+              {newTournamentFormat === "groupStage" && (
+                <section className={styles.groupConfigPanel} aria-labelledby="group-config-title">
+                  <div>
+                    <h3 id="group-config-title">Group Configuration</h3>
+                    <p>Use equal-sized groups for a predictable round-robin schedule.</p>
+                  </div>
+                  <div className={styles.groupConfigFields}>
+                    <label className={styles.fieldLabel}>
+                      <span>Number of groups</span>
+                      <input
+                        type="number"
+                        min={2}
+                        step={1}
+                        value={groupCount}
+                        onChange={(event) =>
+                          setGroupCount(Math.max(2, Math.floor(Number(event.target.value) || 2)))
+                        }
+                      />
+                    </label>
+                    <label className={styles.fieldLabel}>
+                      <span>Teams per group</span>
+                      <input
+                        type="number"
+                        min={2}
+                        step={1}
+                        value={teamsPerGroup}
+                        onChange={(event) =>
+                          setTeamsPerGroup(Math.max(2, Math.floor(Number(event.target.value) || 2)))
+                        }
+                      />
+                    </label>
+                  </div>
+                  <strong className={styles.capacitySummary}>
+                    {newTournamentRequiredTeamCount} teams required · {groupCount} groups × {teamsPerGroup} teams
+                  </strong>
+                </section>
+              )}
               <button
                 className={styles.primaryButton}
                 onClick={() => void handleCreateTournament()}
                 disabled={isCreatingTournament}
               >
                 {isCreatingTournament ? <RefreshCw className={styles.spin} size={18} /> : <Plus size={18} />}
-                Add
+                Create tournament
               </button>
             </div>
             {(createError || createSuccess) && (
@@ -500,7 +696,10 @@ export default function Home() {
                     className={styles.tournamentCard}
                     onClick={() => openTournament(tournament.id)}
                   >
-                    <span>{tournament.name}</span>
+                    <span>
+                      <strong>{tournament.name}</strong>
+                      <small>{(tournament.format ?? "league") === "groupStage" ? "Group Stage" : "League"}</small>
+                    </span>
                     <ArrowRight size={18} />
                   </button>
                 ))}
@@ -580,11 +779,34 @@ export default function Home() {
             <button
               className={styles.textButton}
               onClick={() => void buildFixtures()}
-              disabled={selectedTournament.teams.length < 2}
+              disabled={
+                selectedTournamentFormat === "groupStage"
+                  ? !groupAssignment?.isComplete
+                  : selectedTournament.teams.length < 2
+              }
             >
               Generate <ChevronRight size={16} />
             </button>
           </div>
+          {selectedTournamentFormat === "groupStage" && selectedTournament.groupConfiguration && (
+            <section className={styles.groupOverview} aria-labelledby="group-overview-title">
+              <div>
+                <p className={styles.eyebrow}>Group Stage</p>
+                <h3 id="group-overview-title">
+                  {selectedTournament.groupConfiguration.groupCount} groups ·{" "}
+                  {selectedTournament.groupConfiguration.teamsPerGroup} teams each
+                </h3>
+                <p>
+                  {selectedTournament.teams.length} of {selectedRequiredTeamCount} teams added
+                </p>
+              </div>
+              <div className={styles.groupLabelList} aria-label="Configured groups">
+                {(selectedTournament.groups ?? []).map((group) => (
+                  <span key={group.id}>{group.label}</span>
+                ))}
+              </div>
+            </section>
+          )}
           <section className={styles.fixtureTypeSection} aria-labelledby="fixture-type-title">
             <h3 id="fixture-type-title">Fixture Type</h3>
             <div className={styles.fixtureTypeOptions}>
@@ -610,29 +832,76 @@ export default function Home() {
               ))}
             </div>
           </section>
-          <div className={styles.formRow}>
-            <input value={teamName} onChange={(event) => setTeamName(event.target.value)} placeholder="Team name" />
-            <button className={styles.iconButton} title="Add team" onClick={() => void addTeam()}>
-              <ListPlus size={18} />
+          <div className={styles.addTeamRow}>
+            <div>
+              <strong>Teams</strong>
+              <span>Add clubs and choose their match-day colors.</span>
+            </div>
+            <button
+              type="button"
+              className={styles.addTeamButton}
+              onClick={() => setTeamDialog({ teamIndex: selectedTournament.teams.length })}
+              disabled={
+                selectedTournamentFormat === "groupStage" &&
+                selectedRequiredTeamCount > 0 &&
+                selectedTournament.teams.length >= selectedRequiredTeamCount
+              }
+            >
+              <Plus size={18} /> Add Team
             </button>
           </div>
+          {setupGuidance && <p className={styles.setupGuidance}>{setupGuidance}</p>}
           <div className={styles.teamGrid}>
-            {selectedTournament.teams.map((team) => (
-              <div className={styles.teamCard} key={team.id}>
+            {selectedTournament.teams.map((team, index) => (
+              <div
+                className={styles.teamCard}
+                key={team.id}
+                style={{ "--team-gradient": teamGradient(team, index) } as CSSProperties}
+              >
                 <strong>{team.name}</strong>
-                <button
-                  className={styles.removeTeamButton}
-                  title={`Remove ${team.name}`}
-                  onClick={() => void removeTeam(team)}
-                >
-                  <Trash2 size={16} />
-                </button>
+                <div className={styles.teamActions}>
+                  <button
+                    type="button"
+                    className={styles.moreTeamButton}
+                    title={`More actions for ${team.name}`}
+                    aria-label={`More actions for ${team.name}`}
+                    aria-expanded={activeTeamMenuId === team.id}
+                    onClick={() => setActiveTeamMenuId((current) => current === team.id ? null : team.id)}
+                  >
+                    <MoreVertical size={18} />
+                  </button>
+                  {activeTeamMenuId === team.id && (
+                    <div className={styles.teamMenu} role="menu">
+                      <button role="menuitem" onClick={() => startEditingTeam(team, index)}>
+                        <Pencil size={15} /> Edit
+                      </button>
+                      <button role="menuitem" className={styles.teamMenuDelete} onClick={() => void removeTeam(team)}>
+                        <Trash2 size={15} /> Delete
+                      </button>
+                    </div>
+                  )}
+                </div>
               </div>
             ))}
           </div>
           {selectedTournament.teams.length === 0 && (
             <EmptyState title="No teams added yet. Add teams from the Setup tab." />
           )}
+          {selectedTournamentFormat === "groupStage" &&
+            selectedTournament.groupConfiguration &&
+            selectedTournament.groups && (
+              <GroupAssignmentBoard
+                teams={selectedTournament.teams}
+                groups={selectedTournament.groups}
+                teamsPerGroup={selectedTournament.groupConfiguration.teamsPerGroup}
+                onGroupsChange={async (groups) => {
+                  await persistTournament({
+                    ...selectedTournament,
+                    groups
+                  });
+                }}
+              />
+            )}
           <button
             className={styles.dangerButton}
             onClick={() => void removeTournament(selectedTournament.id)}
@@ -663,7 +932,9 @@ export default function Home() {
           <div className={styles.matchList}>
             {selectedTournament.matches.map((match) => (
               <article className={styles.matchCard} key={match.id}>
-                <span className={styles.roundLabel}>Round {match.round}</span>
+                <span className={styles.roundLabel}>
+                  {groupNameById(match.groupId) ? `${groupNameById(match.groupId)} · ` : ""}Round {match.round}
+                </span>
                 <div className={styles.fixtureLine}>
                   <span className={styles.fixtureTeam}>{teamNameById(match.homeTeamId)}</span>
                   <input
@@ -713,6 +984,8 @@ export default function Home() {
                     <th>M</th>
                     <th>W</th>
                     <th>L</th>
+                    <th>GF</th>
+                    <th>GA</th>
                     <th>GD</th>
                     <th>PTS</th>
                   </tr>
@@ -736,6 +1009,8 @@ export default function Home() {
                       <td>{row.played}</td>
                       <td>{row.won}</td>
                       <td>{row.lost}</td>
+                      <td>{row.goalsFor}</td>
+                      <td>{row.goalsAgainst}</td>
                       <td>{row.goalDifference}</td>
                       <td>{row.points}</td>
                     </tr>
@@ -835,6 +1110,16 @@ export default function Home() {
             </div>
           </section>
         </div>
+      )}
+
+      {teamDialog && selectedTournament && (
+        <TeamDialog
+          team={teamDialog.team}
+          teamIndex={teamDialog.teamIndex}
+          existingTeams={selectedTournament.teams}
+          onSave={saveTeamDraft}
+          onClose={() => setTeamDialog(null)}
+        />
       )}
 
       {confirmation && (
